@@ -5,7 +5,7 @@
 #define endl "\n"
 using namespace std;
 
-int N, M, K; // ¼ıÀÚÀÇ °³¼ö, ¼öÀÇ º¯°æÀÌ ÀÏ¾î³ª´Â È½¼ö, ±¸°£ÀÇ ÇÕÀ» ±¸ÇÏ´Â È½¼ö
+int N, M, K; // ìˆ«ìì˜ ê°œìˆ˜, ìˆ˜ì˜ ë³€ê²½ì´ ì¼ì–´ë‚˜ëŠ” íšŸìˆ˜, êµ¬ê°„ì˜ í•©ì„ êµ¬í•˜ëŠ” íšŸìˆ˜
 vector<long long> index_tree;
 vector<long long> num;
 
@@ -23,7 +23,7 @@ void init()
 //		index_tree[start + i] = num[i];
 //	}
 //
-//	// ³»ºÎ ³ëµå Ã¤¿ì±â (s-1 ~ 1), leftchild, rightchild
+//	// ë‚´ë¶€ ë…¸ë“œ ì±„ìš°ê¸° (s-1 ~ 1), leftchild, rightchild
 //	for (int i = start - 1; i >= 1; i--)
 //	{
 //		int left = i * 2;
@@ -34,23 +34,23 @@ void init()
 //
 //long long queryBU(int queryLeft, int queryRight)
 //{
-//	 // Leaf¿¡¼­ left, right ¼³Á¤
+//	 // Leafì—ì„œ left, right ì„¤ì •
 //	int left = S + queryLeft - 1;
 //	int right = S + queryRight - 1;
 //	long sum = 0;
 //	while (left <= right)
 //	{
-//		// ÁÂÃø ³ëµå°¡ È¦¼öÀÌ¸é ÇöÀç ³ëµå °ª »ç¿ëÇÏ°í ÇÑÄ­ ¿·À¸·Î
+//		// ì¢Œì¸¡ ë…¸ë“œê°€ í™€ìˆ˜ì´ë©´ í˜„ì¬ ë…¸ë“œ ê°’ ì‚¬ìš©í•˜ê³  í•œì¹¸ ì˜†ìœ¼ë¡œ
 //		if (left % 2 == 1)
 //		{
 //			sum += tree[left++];
 //		}
-//		// ¿ìÃø ³ëµå°¡ Â¦¼öÀÌ¸é ÇöÀç ³ëµå °ª »ç¿ëÇÏ°í ÇÑÄ­ ¿·À¸·Î
+//		// ìš°ì¸¡ ë…¸ë“œê°€ ì§ìˆ˜ì´ë©´ í˜„ì¬ ë…¸ë“œ ê°’ ì‚¬ìš©í•˜ê³  í•œì¹¸ ì˜†ìœ¼ë¡œ
 //		if (right % 2 == 0)
 //		{
 //			sum += tree[right--];
 //		}
-//		// ÁÂÃø,¿ìÃø ¸ğµÎ ºÎ¸ğ·Î ÀÌµ¿
+//		// ì¢Œì¸¡,ìš°ì¸¡ ëª¨ë‘ ë¶€ëª¨ë¡œ ì´ë™
 //		left /= 2;
 //		right /= 2;
 //	}
@@ -60,11 +60,11 @@ void init()
 //
 //void updateBU(int target, long long value)
 //{
-//	// Leaf¿¡¼­ targetÀ» Ã£À½
+//	// Leafì—ì„œ targetì„ ì°¾ìŒ
 //	int node = S + target - 1;
-//	// value ¹İ¿µ
+//	// value ë°˜ì˜
 //	tree[node] = value;
-//	// Root¿¡ µµ´Ş ÇÒ ¶§ ±îÁö ºÎ¸ğ¿¡ °ª ¹İ¿µ.
+//	// Rootì— ë„ë‹¬ í•  ë•Œ ê¹Œì§€ ë¶€ëª¨ì— ê°’ ë°˜ì˜.
 //	node /= 2;
 //	while (node > 0)
 //	{
@@ -74,34 +74,34 @@ void init()
 
 long long tree_init(int left, int right, int node)
 {
-	//³»ºÎ ³ëµåÀÏ °æ¿ì
+	//ë‚´ë¶€ ë…¸ë“œì¼ ê²½ìš°
 	if (left != right)
 	{
 		int mid = (left + right) / 2;
 
 		tree_init(left, mid, node * 2);
 		tree_init(mid + 1, right, node * 2 + 1);
-		index_tree[node] = index_tree[node * 2] + index_tree[node * 2 + 1];
-		return index_tree[node];
+		return index_tree[node] = index_tree[node * 2] + index_tree[node * 2 + 1];
+		// return index_tree[node];
 	}
-	else //¸®ÇÁ³ëµåÀÏ °æ¿ì
+	else //ë¦¬í”„ë…¸ë“œì¼ ê²½ìš°
 	{
-		index_tree[node] = num[left];
-		return index_tree[node];
+		return index_tree[node] = num[left];
+		// return index_tree[node];
 	}
 }
 
 long long query(int left, int right, int node, int queryLeft, int queryRight)
 {
-	if (queryRight < left || right < queryLeft) // ¿¬°üÀÌ ¾øÀ½ -> °á°ú¿¡ ¿µÇâÀÌ ¾ø´Â °ª return
+	if (queryRight < left || right < queryLeft) // ì—°ê´€ì´ ì—†ìŒ -> ê²°ê³¼ì— ì˜í–¥ì´ ì—†ëŠ” ê°’ return
 	{
 		return 0;
 	}
-	else if(queryLeft <= left && right <= queryRight) // ÆÇ´Ü °¡´É -> ÇöÀç ³ëµå °ª return
+	else if(queryLeft <= left && right <= queryRight) // íŒë‹¨ ê°€ëŠ¥ -> í˜„ì¬ ë…¸ë“œ ê°’ return
 	{
 		return index_tree[node];
 	}
-	else // ÆÇ´ÜºÒ°¡, ÀÚ½Ä¿¡°Ô À§ÀÓ, ÀÚ½Ä¿¡¼­ ¿Ã¶ó¿Â ÇÕÀ» return
+	else // íŒë‹¨ë¶ˆê°€, ìì‹ì—ê²Œ ìœ„ì„, ìì‹ì—ì„œ ì˜¬ë¼ì˜¨ í•©ì„ return
 	{
 		int mid = (left + right) / 2;
 
@@ -113,8 +113,8 @@ long long query(int left, int right, int node, int queryLeft, int queryRight)
 
 void update(int left, int right, int node, int target, long long diff)
 {
-	// ¿¬°ü ¾øÀ½
-	// ¿¬°ü ÀÖÀ½ -> ÇöÀç ³ëµå¿¡ diff ¹İ¿µ -> ÀÚ½Ä¿¡°Ô diff 
+	// ì—°ê´€ ì—†ìŒ
+	// ì—°ê´€ ìˆìŒ -> í˜„ì¬ ë…¸ë“œì— diff ë°˜ì˜ -> ìì‹ì—ê²Œ diff 
 	if (target < left || right < target)
 	{
 		return;
@@ -148,18 +148,18 @@ int main(void)
 
 	// initial start
 	//int start = 1;
-	//while (start < N) // leaf node¸¦ Á¦¿ÜÇÑ Æ®¸®ÀÇ ³ëµå °³¼ö
+	//while (start < N) // leaf nodeë¥¼ ì œì™¸í•œ íŠ¸ë¦¬ì˜ ë…¸ë“œ ê°œìˆ˜
 	//{
 	//	start <<= 1;
 	//}
 
-	//index_tree.assign(start * 2, 0); // Æ®¸® »çÀÌÁî Á¤ÇÏ±â
+	//index_tree.assign(start * 2, 0); // íŠ¸ë¦¬ ì‚¬ì´ì¦ˆ ì •í•˜ê¸°
 
-	//for (int i = 0; i < N; i++) // leaf node Ã¤¿ì±â
+	//for (int i = 0; i < N; i++) // leaf node ì±„ìš°ê¸°
 	//{
 	//	cin >> index_tree[start + i];
 	//}
-	//for (int i = start - 1; i > 0; i--) // Æ®¸®ÀÇ ±¸°£ ÇÕ ±¸ÇÏ±â(leaf node Á¦¿ÜÇÑ node)
+	//for (int i = start - 1; i > 0; i--) // íŠ¸ë¦¬ì˜ êµ¬ê°„ í•© êµ¬í•˜ê¸°(leaf node ì œì™¸í•œ node)
 	//{
 	//	index_tree[i] = index_tree[i * 2] + index_tree[i * 2 + 1];
 	//}
@@ -167,7 +167,7 @@ int main(void)
 
 
 	int start = 1;
-	while (start < N) // leaf node¸¦ Á¦¿ÜÇÑ Æ®¸®ÀÇ ³ëµå °³¼ö
+	while (start < N) // leaf nodeë¥¼ ì œì™¸í•œ íŠ¸ë¦¬ì˜ ë…¸ë“œ ê°œìˆ˜
 	{
 		start <<= 1;
 	}
